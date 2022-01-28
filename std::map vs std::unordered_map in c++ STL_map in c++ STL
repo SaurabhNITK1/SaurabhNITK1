@@ -1,0 +1,26 @@
+unordered_map -> internally implements hashing
+ordered_map ->   internally implements self balancing BST like Red-Black Tree (dont use this for hashing, its usecase comes when you want to maintain an order.
+
+
+####  Note- In hashing one way of collision resolution is in values put a linked list. Keep the reference pointer of this linked list in the first value row.
+
+
+                  | map             | unordered_map
+---------------------------------------------------------
+Ordering        | increasing  order   | no ordering
+                | (by default)        |
+
+Implementation  | Self balancing BST  | Hash Table
+                | like Red-Black Tree |  
+
+search time     | log(n)              | O(1) -> Average 
+                |                     | O(n) -> Worst Case (in case of collision resolution when same key contains all the values in a linked list)
+
+Insertion time  | log(n) + Rebalance  | Same as search
+                      
+Deletion time   | log(n) + Rebalance  | Same as search
+
+
+############################################################# std::set and std::unordered_set ##########################################################
+
+Since set also internally implements map(set is a map which takes only key and all the values are NULL), so difeerence between set and unordered set are exactly same.
