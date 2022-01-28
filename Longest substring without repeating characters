@@ -1,0 +1,38 @@
+###########################################   Brute force approach ##########################################################################################
+1. frame all the possible substrings by taking two for loops (two pointer approach and sliding window mixed)
+2. at each iteration check if the string between two pointers(i and j) contains repeating character or not
+3. if no, then update the result with the maximum of already stored value(result) and current window size (j-i+1)
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+     
+     int result = 0;
+     int size = s.length();
+     for(int i=0;i<size;i++) {
+         for(int j=i;j<size;j++) {
+             if (checkDuplicate(s, i, j)) result = std::max(result, j-i+1);
+             else break;
+         }
+     }
+        return result;
+    }
+
+    bool checkDuplicate(string s, int start, int end) {
+        std::unordered_set<char> hashset;
+        
+        for (int i=start;i<=end;i++) {
+            if (hashset.find(s[i]) != hashset.end()) 
+                return false;
+            else 
+                hashset.insert(s[i]);
+        }
+        
+        return true;
+        }
+    
+};
+
+
+
+############################################################## optimized solution (Optimized Sliding window approach) #####################################################
