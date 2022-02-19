@@ -59,8 +59,10 @@ public:
                 window_size = std::max(window_size, end-start+1);
                 
                 
-            // start++ already being done by for loop
+           
             chars[s[start]]--;
+            // ********** In any problem do removal first. Then followed by increment******************
+            // start++ already being done by for loop
             end++;
            
         }
@@ -70,3 +72,35 @@ public:
 
 
 #################################################### instead of for loop use while loop #################################################################################
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int start =0;
+        int end = 0;
+        int window_size=0;
+        // Direct access table, similar to Hash table
+        vector<int> chars(128);
+        // Two pointers sliding window approach
+        // Take two pointers start=0 and end=0
+        // Extend the window by doing end++
+        // Contract the window size by doing start++;
+        while (end<s.length()) {
+          
+                
+                 while(chars[s[end]] < 1 && end <s.length()) {
+                     chars[s[end]]++;
+                     end++;
+                 }
+                end--;
+                window_size = std::max(window_size, end-start+1);
+             
+            // ********** In any problem do removal first. Then followed by increment******************//  
+            chars[s[start]]--;   
+            start++;
+            end++;
+           
+        }
+    return window_size;
+    }
+};
