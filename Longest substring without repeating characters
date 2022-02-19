@@ -1,5 +1,5 @@
 ###########################################   Brute force approach ##########################################################################################
-1. frame all the possible substrings by taking two for loops (two pointer approach and sliding window mixed)
+1. frame all the possible substrings by taking two for loops 
 2. at each iteration check if the string between two pointers(i and j) contains repeating character or not
 3. if no, then update the result with the maximum of already stored value(result) and current window size (j-i+1)
 
