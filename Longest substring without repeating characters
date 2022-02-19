@@ -36,3 +36,37 @@ public:
 
 
 ############################################################## optimized solution (Optimized Sliding window approach) #####################################################
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int end = 0;
+        int window_size=0;
+        // Direct access table, similar to Hash table
+        vector<int> chars(128);
+        // Two pointers sliding window approach
+        // Take two pointers start=0 and end=0
+        // Extend the window by doing end++
+        // Contract the window size by doing start++;
+        for (int start=0;start<s.length();start++) {
+          
+                
+                 while(chars[s[end]] < 1 && end<s.length()) {
+                     chars[s[end]]++;
+                     end++;
+                 }
+                end--;
+                window_size = std::max(window_size, end-start+1);
+                
+                
+            // start++ already being done by for loop
+            chars[s[start]]--;
+            end++;
+           
+        }
+    return window_size;
+    }
+};
+
+
+#################################################### instead of for loop use while loop #################################################################################
