@@ -1,0 +1,104 @@
+
+################################# Length Of Longest Palindromic Substring : Brute force solution ##############################################################
+
+
+
+
+
+
+
+
+
+
+
+
+################################# Length Of Longest Palindromic Substring using recursion #####################################################################
+
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        
+        return lengthLongestPalindromicSubStr(s, 0, s.length(), 0);
+        
+    }
+    
+    /* Note:
+       
+       This concept will be used to think of a solution:
+       
+       To recurse through all the substrings of a string with starting pointer i and ending        pointer at j.
+       there are three steps:
+    
+       generate (string word, int i, int j) { 
+       1. print the current string S(i,j)
+       2. call the function recursively on S(i+1,j)
+       3. call the function recursively on S(i,j-1)
+       } 
+    */
+    int lengthLongestPalindromicSubStr(string X, int i, int j, int count) {
+        // here i and j are two pointers
+        
+        if(i > j)
+            return count;
+        if(i == j)
+            return count + 1;
+        
+        // SIMPLE RECURSION WITHOUT DP
+        if (X[i] == X[j]) {
+            /* moving the pointers to the smaller subproblems,
+               there are three subproblems here.
+               1- move both the pointers by one step (i+1,j-1) and get one substr. In this
+                  there is a possibility that we might get the longest Palindromic substr 
+                  (if X[i+1,j+1] is a palindrome which we have to check recursively) 
+                  or we might not get the longest one (if X[i+1, j+1] is not a     
+                  palindrome).
+                  In this case, we will get some smaller palindrome. Therefore, we need to
+                  check the other usecases(2 & 3) also and return the maximum.
+               2- move the start pointer by one step (i+1,j) and get one substr
+               3- move the end pointer by one step (i,j-1) and get one substr
+               we have to return the maximum of three
+           */
+            count = lengthLongestPalindromicSubStr(X, i+1, j-1, count+2);
+            
+            return max(count, max(lengthLongestPalindromicSubStr(X, i+1, j, 0), 
+                                  lengthLongestPalindromicSubStr(X, i, j-1, 0)));
+        }
+        
+        /* if it reaches here means X[i] != X[j]
+           There are two cases here to form subproblems
+           move the start pointer by one step (i+1,j) and get one substr
+           move the end pointer by one step (i,j-1) and get one substr
+           also, when it comes here, it means we've to change the search space and reset the
+           count to 0;
+        */
+        return max(lengthLongestPalindromicSubStr(X, i+1, j, 0),                              
+                   lengthLongestPalindromicSubStr(X, i, j-1, 0));
+    }
+};
+
+
+
+
+############################# Length Of Longest Palindromic substring using Dynamic Programming (Top Down Approach) ##############################################
+
+
+
+
+
+
+
+
+
+############################# Length Of Longest Palindromic substring using Dynamic Programming (Bottom up Approach) ##############################################
+
+
+
+
+
+
+
+
+
+
+####################### Longest Palindromic Substring (return the actual string and not the Length) using resursion ##############################################
