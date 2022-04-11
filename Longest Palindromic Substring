@@ -102,3 +102,133 @@ public:
 
 
 ####################### Longest Palindromic Substring (return the actual string and not the Length) using resursion ##############################################
+
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        /* Note:
+           whenever solving top down approach do not change the storage size dynamically. Means for example,
+           if you are using string to store prev result, then always take fixed size string. This is because
+           recursion works on indexes which are assigned from beginning.
+        */
+        
+        return lengthLongestPalindromicSubStr(s, 0, s.length()-1, createEmptyStringFilledwith$(s.length()));      
+    }
+    
+    /* Note:
+       
+       This concept will be used to think of a solution:
+       
+       To recurse through all the substrings of a string with starting pointer i and ending pointer at j.
+       there are three steps:
+    
+       generate (string word, int i, int j) { 
+       1. print the current string S(i,j)
+       2. call the function recursively on S(i+1,j)
+       3. call the function recursively on S(i,j-1)
+       } 
+    */
+    string lengthLongestPalindromicSubStr(string X, int i, int j, string storeCornerWords) {
+        // here i and j are two pointers
+        
+        if(i > j)
+            return storeCornerWords;
+        if(i == j) {
+            storeCornerWords[i] = X[i];
+            return storeCornerWords;
+        }
+        
+        // SIMPLE RECURSION WITHOUT DP
+        if (X[i] == X[j]) {
+            /* moving the pointers to the smaller subproblems,
+               there are three subproblems here.
+               1- move both the pointers by one step (i+1,j-1) and get one substr.
+                  .In this there is a possibility that we might get the longest Palindromic substr
+                  (if X[i+1,j+1] is a palindrome which we have to check recursively) 
+                  or we might not get the longest one (if X[i+1, j+1] is not a     
+                  palindrome). Since we've to return the string itself save the current X[i] and X[j] 
+                  and keep passing the same string to the next recursive func call to build the result.
+                  In this case, we will get some smaller palindrome. Therefore, we need to
+                  check the other usecases(2 & 3) also and return the maximum.
+               2- move the start pointer by one step (i+1,j) and get one substr
+               3- move the end pointer by one step (i,j-1) and get one substr
+               we have to return the maximum of three
+           */
+            storeCornerWords[i] = X[i];
+            storeCornerWords[j] = X[j];
+            // update storeCornerWords by calling on (i+1, j-1)
+            storeCornerWords = lengthLongestPalindromicSubStr(X, i+1, j-1, storeCornerWords);
+            
+            
+                
+            string s1 = lengthLongestPalindromicSubStr(X, i+1, j, createEmptyStringFilledwith$(X.length()));
+            int l1 = stringLengthExcludingNull(s1);
+            
+            
+            string s2 = lengthLongestPalindromicSubStr(X, i, j-1, createEmptyStringFilledwith$(X.length()));
+            int l2 = stringLengthExcludingNull(s2);
+            
+            string s3 = storeCornerWords;
+            int l3 = stringLengthExcludingNull(s3);
+            
+            
+                
+            int lengthString = l1 > l2 ? max(l1,l3) : max(l2,l3);
+            
+            return (lengthString == l1) ? remove$(s1) : (lengthString == l2) ?  remove$(s2) : remove$(s3);
+            
+            
+         }
+        
+        
+        /* if it reaches here means X[i] != X[j]
+           There are two cases here to form subproblems
+           move the start pointer by one step (i+1,j) and get one substr
+           move the end pointer by one step (i,j-1) and get one substr
+           also, when it comes here, it means we've to change the search space and reset the
+           count to 0;
+        */
+        
+        
+        string s1 = lengthLongestPalindromicSubStr(X, i+1, j, createEmptyStringFilledwith$(X.length()));
+        int l1 = stringLengthExcludingNull(s1);
+        
+        
+        string s2 = lengthLongestPalindromicSubStr(X, i, j-1, createEmptyStringFilledwith$(X.length()));
+        int l2 = stringLengthExcludingNull(s2);
+        
+                
+            
+        return l1>l2 ? remove$(s1) : remove$(s2);
+            
+    }
+    
+    
+    
+    string createEmptyStringFilledwith$(int length) {
+        string newString;
+        newString.clear();
+        newString.resize(length, '$');
+        return newString;
+     }
+    
+    int stringLengthExcludingNull(string result) {
+        int originalLength = 0;
+        for(int i = 0;i<result.size();i++) {
+            if (result[i] != '$')
+                originalLength++;
+        }
+        return originalLength;
+    }
+    
+    string remove$(string  result) {
+        string finalResult;
+        for(int i = 0;i<result.size();i++) {
+            if (result[i] != '$')
+                finalResult.push_back(result[i]);
+        }
+        
+        return finalResult;
+    }
+};
