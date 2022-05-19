@@ -80,21 +80,6 @@ public:
 
 
 
-############################# Length Of Longest Palindromic substring using Dynamic Programming (Top Down Approach) ##############################################
-
-
-
-
-
-
-
-
-
-############################# Length Of Longest Palindromic substring using Dynamic Programming (Bottom up Approach) ##############################################
-
-
-
-
 
 
 
@@ -231,4 +216,176 @@ public:
         
         return finalResult;
     }
+    
+    
+    
+    
+    
+    
+############################## Length Of Longest Palindromic substring using Dynamic Programming (Top Down Approach) ##############################################
+
+
+class Solution {
+public:
+    // Recursion using two pointer approach
+    // NOTE : In recursion, all the sections having return statements are different sections (independent of each other)
+    // In recursion best place to insert in hashmap is just before return statement
+    // In recursion dont change the storage size(here storeCornerWords), keep it fixed because index has to be utilized
+    string longestPalindrome(string s) {
+        map<pair<int,int> , string> hashDP;
+        string test = createEmptyStringFilledwith$(s.length());
+        return remove$(lengthLongestPalindromicSubStr(s, 0, s.length()-1, test, hashDP));      
+    }
+    
+    
+    string lengthLongestPalindromicSubStr(string X, int i, int j, string &storeCornerWords, map<std::pair<int,int> , string> &hashDP) { 
+          
+    if (hashDP.find(make_pair(i, j)) == hashDP.end()) {
+        // base case-
+        // 1. i==j -> all palindrome
+        // 2. j==i+1 && X[i]==X[j] --> palindrome
+        if(i == j) {
+            storeCornerWords[i] = X[i];
+            return storeCornerWords;}
+        
+        if(j==i+1 && X[i]==X[j]) {
+            storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
+            return storeCornerWords;
+        }
+        
+        if (i>j) {
+            return storeCornerWords;
+        }
+        
+        /* declare two strings to calculate (i+1,j) and (i,j-1) */
+        string s1, s2;
+        int l1, l2, l3;
+        if (X[i] == X[j]) {
+                
+                storeCornerWords = lengthLongestPalindromicSubStr(X, i+1, j-1, storeCornerWords, hashDP);
+                // use top down approach/ general recursive approach. Fill values only when (i+1,j-1) is 
+                // a complete palindromic substring. Ignore if not.
+                if (remove$(storeCornerWords).size() == j-i-1) {
+                    storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
+                }
+               
+        }
+        /*
+          This section is used for changing the search space (to recurse through all possible substrings).
+          Here storeCornerWords also need to be compared because storeCornerWords from (i,j) may contain values 
+          whose size is less than j-i+1
+          E.g.
+             "aakuuka"
+             
+             StoreCornerWords (0,6) -> $$kuuk$
+             (i+1,j) ->       (1,6) -> $akuuka
+             (i,j-1) ->       (0,5) -> $$kuuk$
+             
+          if at all StoreCornerWords is empty ie. like "$$$$$$$$$$$", it means there is no palindrome for
+          given (i,j) and we will only change the search space ie. there will be comparison between only l1
+          and l2 as remove$(storeCornerWords).size() will be 0.
+             
+        */
+            
+            s1 = createEmptyStringFilledwith$(X.length());
+            s1 = lengthLongestPalindromicSubStr(X, i+1, j, s1, hashDP);
+            l1 = remove$(s1).size();
+  
+            s2 = createEmptyStringFilledwith$(X.length());
+            s2 = lengthLongestPalindromicSubStr(X, i, j-1, s2, hashDP);
+            l2 = remove$(s2).size();
+        
+            l3 = remove$(storeCornerWords).size();
+        
+            int lengthString = l1 > l2 ? max(l1,l3) : max(l2,l3);
+            
+            string finalstr = (lengthString == l1) ? (s1) : (lengthString == l2) ?  (s2) : storeCornerWords;
+            hashDP.insert(make_pair(make_pair(i,j), finalstr));
+            return finalstr;
+        
+    } else {
+        
+ /*      
+ Here check the hashmap.   
+ */ 
+
+        return (hashDP.find(make_pair(i, j))->second);
+    }
+        
+    }
+    
+    
+    /* This will create and return a new string of size X.length(). It is important in recursion to maintain 
+       the index, so keep the storage size fixed (here this string).
+    */
+    string createEmptyStringFilledwith$(int length) {
+        string newString;
+        newString.resize(length, '$');
+        return newString;
+     }
+    
+    string remove$(string  result) {
+        string finalResult;
+        for(int i = 0;i<result.size();i++) {
+            if (result[i] != '$')
+                finalResult.push_back(result[i]);
+        }
+        
+        return finalResult;
+    }
+};
+
+
+
+
+
+
+############################# Length Of Longest Palindromic substring using Dynamic Programming (Bottom up Approach) ##############################################
+
+
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        vector<vector<int>> dp(s.length(), vector<int>(s.length(), -1));
+        //0---> false
+        //1---> true
+        pair<int,int> update_largest_index;
+        /* base case (i>j ---> all false--->set 0)
+           (i==j ----------> all true------> set 0) 
+           (j==i+1 && s[i] == s[j]
+        */
+        /*
+        Note : This is a special problem where we fill the matrix diagonally. Using this problem you will also learn
+               how to itetrate matrix diagonally
+        */
+        for(int gap=0; gap<=1; gap++) {
+            for(int i=0,j=gap; j<s.length(); i++,j++) {
+                dp[i][j] = (i==j) ? 1 : (j==i+1 && s[i]==s[j]) ? 1 : 0;
+            }
+        }
+        
+        // fill table (tabulation in dp)
+        for (int gap = 1; gap<s.length(); gap++) {
+            for(int i=0, j=gap; j<s.length(); i++,j++) {
+                if (dp[i+1][j-1] && s[i]==s[j]) {
+                    dp[i][j] = 1;
+                    /* if we have to find the length of longest :
+                       int updated_longest = j-i+1; // 2 + (j-1)-(i+1)+1
+                    */
+                    // But in this ques we only need index.
+                    // Save the index of the updated_longest_palindrome
+                    update_largest_index = make_pair(i,j);
+                } else {
+                    dp[i][j] = 0;
+                }
+            }
+        }
+       
+        int length = update_largest_index.second-update_largest_index.first+1;
+        return s.substr(update_largest_index.first, length);
+        
+    }
+};
+
 };
