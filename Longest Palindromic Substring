@@ -222,7 +222,7 @@ public:
     
     
     
-############################## Length Of Longest Palindromic substring using Dynamic Programming (Top Down Approach) ##############################################
+############################## Longest Palindromic substring (actual string) using Dynamic Programming (Top Down Approach) ##############################################
 
 
 class Solution {
@@ -336,7 +336,87 @@ public:
 };
 
 
+############################# Can we do better ? #################################################################################################################
 
+/* 
+ Instead of calculating longest for every (i,j) eliminate those substrings which are not a palindrome
+ That way search space will reduce only to those which are palindromes
+ Of those which are palindromes, return the longest ( for this you can keep a track of indexes of longestSoFar in a variable )
+ */
+ 
+ class Solution {
+public:
+    // Recursion using two pointer approach
+    // NOTE : In recursion, all the sections having return statements are different sections (independent of each other)
+    // In recursion best data structure to use for memoization is matrix/vector
+    // Pass by value and pass by reference has huge impact on time complexity of a program
+    // Pass by reference has much shorter complexity due to obvious reasons. Always try to prefer that
+    string longestPalindrome(string s) {
+        // initialize with -1
+        // In recursion best data structure to use for memoization is matrix/vector
+        vector<vector<int>> DpArray(s.length(),vector<int>(s.length(), -1));
+        pair<int,int> longestSoFar;
+        lengthLongestPalindromicSubStr(s, 0, s.length()-1, longestSoFar, DpArray);
+        return s.substr(longestSoFar.first, longestSoFar.second - longestSoFar.first + 1);
+    }
+    
+    
+    bool lengthLongestPalindromicSubStr(string &X, int i, int j, pair<int,int> &longestSoFar, vector<vector<int>> &DpArray) { 
+        
+        
+        // Check if [ i ... j ] is already calculated before
+        if (DpArray[i][j] != -1) {
+            return DpArray[i][j];         
+        }
+        
+          
+        // base case-
+        // 1. i==j -> all palindrome
+        // 2. j==i+1 && X[i]==X[j] --> palindrome
+        bool ret_val = false;
+        if(i == j) {
+            DpArray[i][j] = 1;
+            int current_longest = j-i+1;
+            longestSoFar = (current_longest > (longestSoFar.second - longestSoFar.first + 1)) ? make_pair(i,j) : longestSoFar;
+            bool ret_val = true;
+            return true;
+        }
+        
+        if (j==i+1 && X[i]==X[j]) {
+            DpArray[i][j] = 1;
+            int current_longest = j-i+1;
+            longestSoFar = (current_longest > (longestSoFar.second - longestSoFar.first + 1)) ? make_pair(i,j) : longestSoFar;
+            bool ret_val = true;
+            return true;
+        }
+              
+        
+        if (X[i] == X[j] ) {  
+            ret_val = true && lengthLongestPalindromicSubStr(X, i+1, j-1, longestSoFar, DpArray);
+            if (ret_val) {
+                DpArray[i][j] = 1;
+                int current_longest =j-i+1;
+                longestSoFar = (current_longest > (longestSoFar.second - longestSoFar.first + 1)) ? make_pair(i,j) : longestSoFar;
+                
+        }
+            }
+        
+               
+        /*
+          This section is used for changing the search space (to recurse through all possible substrings).       
+        */  
+        lengthLongestPalindromicSubStr(X, i+1, j, longestSoFar, DpArray);
+        
+        lengthLongestPalindromicSubStr(X, i, j-1, longestSoFar, DpArray);
+           
+        
+        if (!ret_val) {
+            DpArray[i][j] = 0;
+        }
+            
+        return ret_val;
+    }
+};
 
 
 
