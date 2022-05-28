@@ -106,3 +106,87 @@ public:
 
 ####################################### Longest Palindromic subsequence Bottom up dp ############################################################################
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################### Longest Palindromic subsequence (return the length) top down #######################################################################
+
+class Solution {
+public:
+    // Recursion using two pointer approach
+    // NOTE : In recursion, all the sections having return statements are different sections (independent of each other)
+    // In recursion best data structure to use is indexed data structure ie. array / matrix
+    // In recursion dont change the storage size(here storeCornerWords), keep it fixed because index has to be utilized
+    int longestPalindromeSubseq(string s) {
+        
+        
+        vector<vector<int>> dp(s.length(), vector<int> (s.length(), -1));
+        int coun = 0;
+        return lengthLongestPalindromicSubseq(s, 0, s.length()-1, coun, dp);      
+    }
+    
+    
+    int lengthLongestPalindromicSubseq(string &X, int i, int j, int &count, vector<vector<int>> &dp) { 
+          
+    if (dp[i][j] != -1) {
+        return dp[i][j];
+    }
+        // base case-
+        // 1. i==j -> all palindrome
+        // 2. j==i+1 && X[i]==X[j] --> palindrome
+        if(i == j) {
+            count++;
+            return count;}
+        
+        if(j==i+1 && X[i]==X[j]) {
+            count = count + 2;
+            return count;
+        }
+        
+        
+        /* declare two strings to calculate (i+1,j) and (i,j-1) */
+        
+        if (X[i] == X[j]) {
+                // use top down approach/ general recursive approach. update count
+                count = lengthLongestPalindromicSubseq(X, i+1, j-1, count, dp) + 2;        
+        }
+        /*
+          This section is used for changing the search space (to recurse through all possible substrings).
+          Here Count will be zero as the search space is changing.     
+        */
+            int count1=0;
+            count1 = lengthLongestPalindromicSubseq(X, i+1, j, count1, dp);
+            int count2=0;
+            count2 = lengthLongestPalindromicSubseq(X, i, j-1, count2, dp);   
+            int count3 = count;
+        
+            int finalCount = count1 > count2 ? max(count1,count3) : max(count2,count3);
+            dp[i][j] = finalCount;
+            return finalCount;
+    
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
