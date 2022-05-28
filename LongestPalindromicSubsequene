@@ -1,0 +1,108 @@
+########################### Longest Palindromic subsequence (return actual string) top down dp #####################################################################
+
+class Solution {
+public:
+    // Recursion using two pointer approach
+    // NOTE : In recursion, all the sections having return statements are different sections (independent of each other)
+    // In recursion best data structure to use is indexed data structure ie. array / matrix
+    // In recursion dont change the storage size(here storeCornerWords), keep it fixed because index has to be utilized
+    int longestPalindromeSubseq(string s) {
+        
+        
+        vector<vector<string>> dp(s.length(), vector<string> (s.length(), "-1"));
+        string test = createEmptyStringFilledwith$(s.length());
+        return remove$(lengthLongestPalindromicSubseq(s, 0, s.length()-1, test, dp)).size();      
+    }
+    
+    
+    string lengthLongestPalindromicSubseq(string &X, int i, int j, string &storeCornerWords, vector<vector<string>> &dp) { 
+          
+    if (dp[i][j] != "-1") {
+        return dp[i][j];
+    }
+        // base case-
+        // 1. i==j -> all palindrome
+        // 2. j==i+1 && X[i]==X[j] --> palindrome
+        if(i == j) {
+            storeCornerWords[i] = X[i];
+            return storeCornerWords;}
+        
+        if(j==i+1 && X[i]==X[j]) {
+            storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
+            return storeCornerWords;
+        }
+        
+        
+        /* declare two strings to calculate (i+1,j) and (i,j-1) */
+        string s1, s2;
+        int l1, l2, l3;
+        if (X[i] == X[j]) {
+                
+                storeCornerWords = lengthLongestPalindromicSubseq(X, i+1, j-1, storeCornerWords, dp);
+                // use top down approach/ general recursive approach. Fill values all the time
+                // when you find (X[i] == X[j]). change the search space otherwise.
+                    storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
+                
+               
+        }
+        /*
+          This section is used for changing the search space (to recurse through all possible substrings).
+          Here storeCornerWords also need to be compared because storeCornerWords from (i,j) may contain values 
+          whose size is less than j-i+1
+          E.g.
+             "aakuuka"
+             
+             StoreCornerWords (0,6) -> $$kuuk$
+             (i+1,j) ->       (1,6) -> $akuuka
+             (i,j-1) ->       (0,5) -> $$kuuk$
+             
+          if at all StoreCornerWords is empty ie. like "$$$$$$$$$$$", it means there is no palindrome for
+          given (i,j) and we will only change the search space ie. there will be comparison between only l1
+          and l2 as remove$(storeCornerWords).size() will be 0.
+             
+        */
+            
+            s1 = createEmptyStringFilledwith$(X.length());
+            s1 = lengthLongestPalindromicSubseq(X, i+1, j, s1, dp);
+            l1 = remove$(s1).size();
+  
+            s2 = createEmptyStringFilledwith$(X.length());
+            s2 = lengthLongestPalindromicSubseq(X, i, j-1, s2, dp);
+            l2 = remove$(s2).size();
+        
+            l3 = remove$(storeCornerWords).size();
+        
+            int lengthString = l1 > l2 ? max(l1,l3) : max(l2,l3);
+            
+            string finalstr = (lengthString == l1) ? (s1) : (lengthString == l2) ?  (s2) : storeCornerWords;
+            dp[i][j] = finalstr;
+            return finalstr;
+    
+        
+    }
+    
+    
+    /* This will create and return a new string of size X.length(). It is important in recursion to maintain 
+       the index, so keep the storage size fixed (here this string).
+    */
+    string createEmptyStringFilledwith$(int length) {
+        string newString;
+        newString.resize(length, '$');
+        return newString;
+     }
+    
+    string remove$(string  result) {
+        string finalResult;
+        for(int i = 0;i<result.size();i++) {
+            if (result[i] != '$')
+                finalResult.push_back(result[i]);
+        }
+        
+        return finalResult;
+    }
+};
+
+
+
+####################################### Longest Palindromic subsequence Bottom up dp ############################################################################
+
