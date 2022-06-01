@@ -233,8 +233,7 @@ public:
     // In recursion dont change the storage size(here storeCornerWords), keep it fixed because index has to be utilized
     string longestPalindrome(string s) {
         map<pair<int,int> , string> hashDP;
-        string test = createEmptyStringFilledwith$(s.length());
-        return remove$(lengthLongestPalindromicSubStr(s, 0, s.length()-1, hashDP));      
+        return lengthLongestPalindromicSubStr(s, 0, s.length()-1, hashDP);      
     }
     
     
@@ -319,6 +318,7 @@ public:
         return finalResult;
     }
 };
+
 
 
 
