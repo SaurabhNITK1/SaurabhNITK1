@@ -234,83 +234,68 @@ public:
     string longestPalindrome(string s) {
         map<pair<int,int> , string> hashDP;
         string test = createEmptyStringFilledwith$(s.length());
-        return remove$(lengthLongestPalindromicSubStr(s, 0, s.length()-1, test, hashDP));      
+        return remove$(lengthLongestPalindromicSubStr(s, 0, s.length()-1, hashDP));      
     }
     
     
-    string lengthLongestPalindromicSubStr(string X, int i, int j, string &storeCornerWords, map<std::pair<int,int> , string> &hashDP) { 
+    string lengthLongestPalindromicSubStr(string X, int i, int j, map<std::pair<int,int> , string> &hashDP) { 
           
-    if (hashDP.find(make_pair(i, j)) == hashDP.end()) {
+    // check if memoized value exists ? 
+    if (hashDP.find(make_pair(i, j)) != hashDP.end()) {
+        return (hashDP.find(make_pair(i, j))->second);
+    }
+        
+        
         // base case-
         // 1. i==j -> all palindrome
         // 2. j==i+1 && X[i]==X[j] --> palindrome
         if(i == j) {
-            storeCornerWords[i] = X[i];
-            return storeCornerWords;}
+            return {X[i]};
+        }
         
         if(j==i+1 && X[i]==X[j]) {
-            storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
-            return storeCornerWords;
+            return {X[i],X[j]};
         }
         
-        if (i>j) {
-            return storeCornerWords;
-        }
         
         /* declare two strings to calculate (i+1,j) and (i,j-1) */
         string s1, s2;
         int l1, l2, l3;
+        string temp = createEmptyStringFilledwith$(X.length());
         if (X[i] == X[j]) {
                 
-                storeCornerWords = lengthLongestPalindromicSubStr(X, i+1, j-1, storeCornerWords, hashDP);
+                string storeCornerWords = lengthLongestPalindromicSubStr(X, i+1, j-1, hashDP);
                 // use top down approach/ general recursive approach. Fill values only when (i+1,j-1) is 
                 // a complete palindromic substring. Ignore if not.
-                if (remove$(storeCornerWords).size() == j-i-1) {
-                    storeCornerWords[i] = X[i], storeCornerWords[j] = X[j]; 
+                if (storeCornerWords.size() == j-i-1) {
+                    temp[i] = X[i];
+                    temp.replace(i+1, j-i-1, storeCornerWords);
+                    temp[j] = X[j];
                 }
                
         }
+        temp = remove$(temp);
         /*
           This section is used for changing the search space (to recurse through all possible substrings).
           Here storeCornerWords also need to be compared because storeCornerWords from (i,j) may contain values 
           whose size is less than j-i+1
-          E.g.
-             "aakuuka"
-             
-             StoreCornerWords (0,6) -> $$kuuk$
-             (i+1,j) ->       (1,6) -> $akuuka
-             (i,j-1) ->       (0,5) -> $$kuuk$
-             
-          if at all StoreCornerWords is empty ie. like "$$$$$$$$$$$", it means there is no palindrome for
-          given (i,j) and we will only change the search space ie. there will be comparison between only l1
-          and l2 as remove$(storeCornerWords).size() will be 0.
+          
              
         */
             
-            s1 = createEmptyStringFilledwith$(X.length());
-            s1 = lengthLongestPalindromicSubStr(X, i+1, j, s1, hashDP);
-            l1 = remove$(s1).size();
+            s1 = lengthLongestPalindromicSubStr(X, i+1, j, hashDP);
+            l1 = s1.size();
   
-            s2 = createEmptyStringFilledwith$(X.length());
-            s2 = lengthLongestPalindromicSubStr(X, i, j-1, s2, hashDP);
-            l2 = remove$(s2).size();
+            s2 = lengthLongestPalindromicSubStr(X, i, j-1, hashDP);
+            l2 = s2.size();
         
-            l3 = remove$(storeCornerWords).size();
+            l3 = remove$(temp).size();
         
-            int lengthString = l1 > l2 ? max(l1,l3) : max(l2,l3);
+            int lengthString = (s1).size() > (s2).size() ? max(l1,l3) : max(l2,l3);
             
-            string finalstr = (lengthString == l1) ? (s1) : (lengthString == l2) ?  (s2) : storeCornerWords;
+            string finalstr = (lengthString == l1) ? (s1) : (lengthString == l2) ?  (s2) : temp;
             hashDP.insert(make_pair(make_pair(i,j), finalstr));
             return finalstr;
-        
-    } else {
-        
- /*      
- Here check the hashmap.   
- */ 
-
-        return (hashDP.find(make_pair(i, j))->second);
-    }
         
     }
     
@@ -334,6 +319,7 @@ public:
         return finalResult;
     }
 };
+
 
 
 ############################# Can we do better ? #################################################################################################################
