@@ -13,6 +13,7 @@ public:
     }
     
     int LCS(string &X, string &Y, int i, int j, vector<vector<int>> &dpArray) {
+        // We know that every string is null terminated
         //if it hits termination '/0' then simply return the already stored value
         if (i == X.length() || j == Y.length()) {
             return 0;
