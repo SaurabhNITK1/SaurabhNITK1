@@ -1,0 +1,39 @@
+
+
+
+
+#################################################### Solved and verified on geeks for geeks ####################################################################################
+https://practice.geeksforgeeks.org/problems/depth-first-traversal-for-a-graph/1/
+
+################ Use Recursion for DFS instead of stack #################### With stack also we can do but no sense ################################################
+
+class Solution {
+  public:
+    // Function to return a list containing the DFS traversal of the graph.
+    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+    // take a vector<int> to mark the visited vertices
+     vector <int> visited(V, 0);
+     // start from 0th vertex
+     visited[0] = 1;
+     return solve (0, visited, adj);
+    }
+
+   // take a vector to save the result
+   vector <int> dfs;
+
+   vector<int> solve (int node, vector <int> &visited, vector<int> adj[]) {
+       // Data structure to take for DFS is stack/ recursion
+        
+        //visited[node] = 1;
+        dfs.push_back(node);
+            
+        for (auto it : adj[node]) {
+            if (!visited[it]) {
+                visited[it] = 1;
+                solve(it, visited, adj);
+            }
+        }
+        
+        return dfs;
+   }
+};
