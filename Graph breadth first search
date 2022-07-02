@@ -14,7 +14,7 @@ class Solution {
         queue<int> queue;
         // To keep track of already visited vertices
         // V is no of vertices
-        vector<int> visited(V+1,0);
+        vector<int> visited(V,0);
         
         // To save the result
         // All the nodes may not be connected as per question
