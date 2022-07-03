@@ -25,7 +25,7 @@ class Solution {
         // whenever pushing to queue mark the node as visited
         visited[0] = 1;
         
-        // pop should only happen if all the adjacent nodes are visited
+        
         while(!queue.empty()) {
             // pop the first node and save in the result
             int node = queue.front();
