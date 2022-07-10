@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        // vector<int> visited; no need to maintain since its a tree and there wont be any cycle
+        
+        queue<TreeNode*> queue;
+        vector<vector<int>> levelOrder;
+        vector<int> temp; 
+        if (root != NULL) {
+            queue.push(root);
+            temp.push_back(root->val);
+            levelOrder.push_back(temp);
+            temp.clear();
+        }
+                
+        while (!queue.empty()) {
+            // It is similar to BfS. The extra thing here is 
+            // to implement split-level BFS traversal : [[1], [2, 3], [4, 5]]
+            int sizeOfQueue = queue.size(); // store size for each step to make it const bcz size of queue is     
+                                                // changing in this loop
+            for (int i = 0; i<sizeOfQueue;i++) {
+                TreeNode *node = queue.front();
+                queue.pop();
+
+
+                if (node->left != NULL) {
+                    // we are maintaining queue to remember which step we've to go next. tats y saving entire node(so 
+                    // that we get info abt next node)
+                    queue.push(node->left);
+                    // we are mintaining temp so that we can put val of each level in 2d vector. tats y saving val in 
+                    // temp.
+                    temp.push_back(node->left->val);
+                }
+                if (node->right != NULL) {
+                    queue.push(node->right);
+                    temp.push_back(node->right->val);
+                }
+            }
+            if(!temp.empty()) {
+              levelOrder.push_back(temp);
+              temp.clear();
+            }
+        }
+        return levelOrder;
+    }
+};
