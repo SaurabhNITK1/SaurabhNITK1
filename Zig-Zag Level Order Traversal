@@ -1,0 +1,58 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+
+
+/*
+ This is slightly modified version of level order traversal
+*/
+
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> zigzagLevelOrder;
+        queue<TreeNode*> queue;
+        bool isReverse = false;
+        
+        if(root!=NULL) {
+            queue.push(root);
+        }
+        
+        while(!queue.empty()) {
+            /* here queue size is changing inside the loop(push is done on queue). So, save the queueSize                            to keep it constant. Cant use for(i=0;i<queue.size();i++) here because queue.size is changing afer each                loop*/
+            int queueSize = queue.size(); 
+            vector<int> temp(queueSize);
+            for(int i=0; i<queueSize; i++) {
+                TreeNode* currentNode = queue.front();
+                queue.pop();
+                int index = isReverse ? (queueSize-i-1) : i;
+                // Save the value in temp variable in the same level. Dont save the values for next level in the    
+                // current level. Its not a good design practice. In this use case its problematic too, As we have
+                // to deal with removing extra zeroes.
+                temp[index] = currentNode->val;
+                
+                if(currentNode->left != NULL) {
+                    queue.push(currentNode->left);
+                }
+
+                if(currentNode->right != NULL) {
+                    queue.push(currentNode->right);
+                }
+            }
+            isReverse = !isReverse;  
+            zigzagLevelOrder.push_back(temp);
+           // temp.clear();
+            
+        }
+        return zigzagLevelOrder;
+    }
+};
