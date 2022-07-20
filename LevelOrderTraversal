@@ -1,0 +1,48 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        // vector<int> visited; no need to maintain since its a tree and there wont be any cycle
+        
+        queue<TreeNode*> queue;
+        vector<vector<int>> levelOrder;
+        if (root != NULL) {
+            queue.push(root);
+        }
+                
+        while (!queue.empty()) {
+            int sizeOfQueue = queue.size(); // store size for each step to make it const bcz size of queue is     
+                                                // changing in this loop
+            vector<int> temp; 
+            for (int i = 0; i<sizeOfQueue;i++) {
+                // This operation will be happening in current node
+                TreeNode *node = queue.front();
+                queue.pop();
+                temp.push_back(node->val); 
+
+                /* These operations will be happening in child node. Imp Note: In child nodes only try to push the  
+                   nodes in queue , so as to maintain the reference. Try to do other operations in current node, which 
+                   is good design practice */
+                if (node->left != NULL) {
+                    queue.push(node->left);
+                }
+                if (node->right != NULL) {
+                    queue.push(node->right);
+                }
+            }
+            levelOrder.push_back(temp);
+            }
+        
+        return levelOrder;
+    }
+};
