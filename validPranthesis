@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool isValid(string s) {
+        stack <char> stack;
+        map<char, char> hash;
+        hash.insert({'(' , ')'});
+        hash.insert({ '[' , ']'});
+        hash.insert({ '{' , '}'});
+        
+        for(int i=0;i<s.size();i++) {
+            if(s[i]=='(' || s[i]=='{' || s[i]=='[') {
+                stack.push(s[i]);
+                continue;
+            }
+            
+            // If control is reaching here means its a closing braces
+            // and stack must be populated with opening braces
+            if (stack.empty())
+                    return false;
+            
+            if(s[i]==hash.find(stack.top())->second) {
+                stack.pop();
+                continue;
+            }    
+            return false;
+        }
+        return stack.empty();
+    }
+    
+};
