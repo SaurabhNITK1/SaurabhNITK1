@@ -1,0 +1,51 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {     
+        if (root==NULL) return 0;
+        int max_width=1;
+     
+        queue<pair<TreeNode*, unsigned long long int>> queue;  
+        // Since BT can be stored in array and child nodes are 2*n, 2*n+1. root is stored at 1st
+        // The imp point here is to take unsigned long long int and not int
+        queue.push({root, 1});
+    
+        while(!queue.empty()) {
+            // level starting
+            int levelSize = queue.size();
+            unsigned long long int left = queue.front().second;
+            unsigned long long int right;
+            
+            for(int i=0; i<levelSize; i++) {
+                
+                TreeNode* node = queue.front().first;
+                unsigned long long int index = queue.front().second;
+                right = index; // Here both are same if you see carefully
+                queue.pop();
+                
+                if (node->left!=NULL) 
+                    // left child is at index 2*n
+                    queue.push({node->left, 2*index});
+                if (node->right!=NULL)
+                    // right child is at index 2*n+1
+                    queue.push({node->right, 2*index+1});          
+            }
+            // one level ended here and we got the left, right. So, update the max_width
+            // here typrcast right and left back to int bcz return value is int
+            max_width = max(max_width, (int)(right-left+1));     
+        }
+        
+        return max_width;
+        
+    }
+};
