@@ -1,0 +1,60 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    /* PLEASE READ THE CONSTRAINTS, CONSTRAINTS ARE VERY IMPORTANT FOR THIS QUESTION
+       The number of nodes in the tree is in the range [2, 105].
+       -109 <= Node.val <= 109
+       All Node.val are unique.
+       p != q
+       p and q will exist in the tree.
+    */
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root==NULL) return NULL;
+        
+        /* if any of the p,q equals root then root is the LCA bcz as per constraint
+          p,q must exist */
+        if(root==p || root==q) return root;
+        
+        // If any of p or q exists in the left subtree,  This will be returning the node where it exists
+        TreeNode* left = lowestCommonAncestor(root->left, p, q); 
+        // If any of p or q exists in the right subtree,  This will be returning the node where it exists
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        
+        
+        /* Now based on left and right, there are three cases
+           1. Both p and q are in left and right respectively
+              so, left and right, both will get populated, means root is the LCA
+           2. Both p and q are in right
+              so, left will be null, right gets populated, 
+              and since constraints says that  both p, q must exists, therefore whatever got populated in 
+              right first is the LCA
+           3. Both p and q are in left
+              so, right will be null, left got populated, 
+              and since constraints says that both p, q must exist, therefore whatever gets populated in 
+              left first is the LCA
+        */
+        
+        
+        /* correct way(understandable)
+        if (right!=NULL && left!=NULL) return root;
+        if (right==NULL && left == NULL) return NULL;
+        else if (left!=NULL && right==NULL) return left;
+        else return right;
+        */
+        
+        // clean way to do the same thing
+        if (left == NULL) return right;
+        else if(right == NULL) return left;
+        else return root;
+        
+        
+    }
+};
