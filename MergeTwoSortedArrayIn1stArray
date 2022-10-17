@@ -1,0 +1,31 @@
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        
+        //Start filling nums1 from behind ie. from index [m+n]
+        int i=m-1, j=n-1, k=m+n-1; // i pointer to 1st array, j to 2nd array, k to 3rd array
+        
+            
+        // resolve common  
+        while(i>=0 && j>=0) {
+            if(nums1[i]>=nums2[j]) {
+                nums1[k]=nums1[i];
+                i--;
+            }
+            else if(nums1[i]<nums2[j]) {
+                 nums1[k]=nums2[j];
+                j--;
+            }
+            k--;
+        }
+        
+        // whatever is left in j, flush that out
+        while(j>=0) {
+            nums1[k]=nums2[j];
+                j--;
+                k--;
+        }
+        
+        // flushing out i is not required bcz we are merging to nums1 itself
+    }
+};
