@@ -1,0 +1,77 @@
+
+######################################################## Approach1: By finding pivot ###############################################################################
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int start = 0, end = nums.size()-1;
+        int pivot = findPivot(nums, 0, end);
+        
+        // if pivot not found, then use simple binary search
+        if (pivot==-1) 
+            return BinarySearch(target, 0, end, nums);
+        
+        // pivot found. So 3 cases are there:
+        // i.  nums[pivot]==target                               ----> return pivot
+        // ii. target>nums[pivot] && target<=nums[end]           ----> do a binary search from (pivot+1 to end)
+        // iii.target>=nums[start] && target<nums[pivot]         ----> do a binary search from (start to pivot-1)
+        if(target==nums[pivot])
+            return pivot;
+        
+        if(target<nums[pivot] && target>=nums[start])
+            return BinarySearch(target, 0, pivot-1, nums);
+        
+        return BinarySearch(target, pivot+1, end, nums);
+        
+    }
+    
+    
+    // returns -1 if pivot not found
+    int findPivot(vector<int>& arr, int low, int high) {
+        if(low>high)
+            return -1;
+        // if size of arr is 1, mid logic won't work
+        if(arr.size()==1)
+            return low; // or high, both will be 0 here
+        
+        // base cases: border use case
+        // eg. [5,6,7,1,2,3,4] - here pivot is 7 and 1. We need to return
+        // any one of them in order to divide the array. Lets return 7.
+        int mid = (low+high)/2;
+        if(arr[mid]>arr[mid+1])
+            return mid;
+        
+        if(mid>=1 && arr[mid]<arr[mid-1])
+            return mid-1;
+        
+        if(arr[mid]>arr[high])
+            return findPivot(arr, mid+1, high);
+        if(arr[mid]<arr[low])
+            return findPivot(arr, low, mid-1);
+        
+        return -1;
+    }
+    
+    
+    // returns -1 if element not found
+    int BinarySearch(int target, int start, int end, vector<int>& nums) {
+        
+        if(start>end) {
+            return -1;
+        }
+            int mid=(start+end)/2;
+
+            if(nums[mid]==target)
+                return mid;
+            else if(nums[mid]>target)
+                return BinarySearch(target, start, mid-1, nums);
+            else
+                return BinarySearch(target, mid+1, end, nums);
+    }   
+};
+
+
+############################################### Approach 2: Without finding pivot #################################################################################
+
+
+
