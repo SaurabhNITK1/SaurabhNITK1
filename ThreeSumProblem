@@ -1,0 +1,76 @@
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        /* 
+         1. Sorting will ensure that duplicate entries in duplets of twoSumList are taken care
+            This is ensured by puting values in hashmap. If that value is already present, the
+            prev value is overwritten thus maintaining only one value. 
+         2. Sorting will also ensure that while creating the triplets the sorting order is maintained.
+            This will ensure no duplicate triplets using a hashset. This is ensured by passing remaining items
+            from nums[] to calculate twoSumList and not the entire nums[]
+         */
+       Arrays.sort(nums);
+       List<List<Integer>> twoSumList = new ArrayList<>(); /* To store duplets of twoSumList */
+       Set<List<Integer>> result = new HashSet<>();   /* To store triplets of result and avoid duplicate triplets.
+        Note: it will avoid duplicates only when the triplets are in same order (sorting/maintaining order will help) */
+       for (int i=0; i< nums.length; i++) {
+            int target = 0-nums[i]; /* if you fix one element, this 3 sum problem will become two sum */    
+
+            /* 
+            To avoid duplicate triplets we dont send 
+            entire nums as two sum input. This is because the elements which are already iterated in the above for loop
+            would have got all the possible triplets. If we send them again and it got added again in the two sum
+            response it will lead to duplicate triplets
+            */
+            int[] twoSumInput = Arrays.copyOfRange(nums, i+1, nums.length); // i+1 assumming atleast 3 numbers in nums[]
+            if(twoSumExists(twoSumInput, target, twoSumList)) { 
+                    for(List<Integer> j: twoSumList) {
+                        List<Integer> triplets = new ArrayList<>();
+                        // maintain order
+                        triplets.add(nums[i]);         
+                        triplets.add(j.get(0));
+                        triplets.add(j.get(1));
+                        result.add(triplets);
+                 }
+            }
+            // cleanup twoSumList for next iteration
+            twoSumList.clear();
+       }
+        return new ArrayList<>(result);
+    }
+
+    /**
+    1. This should return whether twoSum exists or not. 
+    2. This should also populate twoSumList with all the numbers forming this twoSum. 
+    3. Further this should be in sorted order. The sorting is taken care by the fact that nums[] is sorted 
+       and since we are saving the already iterated entries in hashmap, the current element will be always
+       greater than the hashed element
+    4. Moreover it will also avoid duplicate entries. This is ensured by sorting and puting values in hashmap. 
+       If that value is already present,it will be the immediate next entry (as nums[] is sorted). Hence the prev 
+       value is overwritten thus maintaining only one value.
+    */
+    private Boolean twoSumExists(int[] nums, int target, List<List<Integer>> twoSumList) {
+        Map<Integer, Integer> hash = new HashMap<>();
+         // flag to return true false based on if we are able to get atleast one pair
+        int found = 0;
+
+
+        for(int i=0; i < nums.length; i++) {
+            // check if 'target-i' is present in hashmap. yes means pair found.
+            // While looking for a pair, in hashmap we are keeping only the prev records
+            // If the pair for a particular element is present after the element itself, we will
+            // anyhow find that when the iterator reaches its other pair
+            int otherPair = target - nums[i];  
+            if (hash.containsKey(otherPair)) {
+                List<Integer> twoSum = new ArrayList<>();
+                // maintain ascending order while adding(i is always greater than otherpair bcz nums[] is sorted)
+                twoSum.add(otherPair);
+                twoSum.add(nums[i]);
+                twoSumList.add(twoSum);
+                found=1;
+            } 
+            // you need to put it in map every time because we are calculating all iterations
+            hash.put(nums[i], i);    
+        }
+        return found==1?true:false;
+    }
+}
