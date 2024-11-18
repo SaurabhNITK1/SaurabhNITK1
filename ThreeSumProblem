@@ -98,3 +98,32 @@ class Solution {
        return result;
     }
 }
+
+
+################################ Using Set to filter out duplicate triplets (since the array is sorted the order of the triplets will be same can be filtered using Set #####################################
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+       Arrays.sort(nums);
+       Set<List<Integer>> result = new HashSet<>();
+       for(int i = 0; i<nums.length-2; i++) {
+          // Avoid duplictes for the main element
+          int start = i+1;
+          int end = nums.length-1;
+          /* Now take two pointers and calculate twoSum. Note that when one element is fixed (here i is 
+             fixed in entire while loop, the three sum problem becomes two sum. */
+          while(start<end) {
+            int threeSum = nums[i] + nums[start] + nums[end];
+            if (threeSum == 0) {
+                result.add(Arrays.asList(nums[i], nums[start], nums[end]));
+                start++;
+                end--;
+            } else if (threeSum>0) {
+                end--;
+            } else if (threeSum<0) {
+                start++;
+            }
+         }
+       }
+       return new ArrayList(result);
+    }
+}
