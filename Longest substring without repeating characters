@@ -104,3 +104,41 @@ public:
     return window_size;
     }
 };
+
+
+
+###################### Java Solution Sliding window approach##########################################
+
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length()==1) {
+            return 1;
+        }
+        int start=0, end=0;
+        Set<Character> uniqueChars = new HashSet<>();
+        int maxLength = 0;
+        while(end < s.length()) {
+            if (uniqueChars.contains(s.charAt(end))) {
+                // invalid window. condition not met
+                // create a new window.Ex in 'abcabcbb' all the possible substring from starting from 'a' found. 
+                // Now repeat same for 'b'. Keep the already hashed elements to save complexity and memory and
+                // if needed only alter the first and last element of the window
+
+                // update the hashmap for new window
+                uniqueChars.remove(s.charAt(start));
+                // contract the new window
+                start++;
+                // validate the new window in next iteration. Dont alter end let it go to next iteration to check if 
+                // this is a valid window (condition of duplicate)
+            } else {
+                // valid window
+                maxLength = Math.max(maxLength, end-start+1);
+                uniqueChars.add(s.charAt(end));
+                end++;
+            }
+            
+        }
+        return maxLength;
+    }
+}
