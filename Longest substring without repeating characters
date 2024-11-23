@@ -108,7 +108,11 @@ public:
 
 
 ###################### Java Solution Sliding window approach##########################################
-
+Algorithm:
+1. take two pointers start = 0 and end =0. (start both from 0)
+2. Check the condition given in the que and if the conditiuon is met, extend the window by doing end++ and check if the condition remains true in the next iteration.
+3. if the condition is false, contract the window by doing start++ and also removing start index from the hash. check in the next iteration if the condition is true or false
+4. keep repating 2. and 3, until you parse all the string.
 
 class Solution {
     public int lengthOfLongestSubstring(String s) {
