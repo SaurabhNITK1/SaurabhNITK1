@@ -1,0 +1,76 @@
+######## MycodeSchool has very good explanation. Practice this question at geeksForGeeks ########
+######## Java Solution ########
+class Solution {
+    public String infixToPostfix(String s) {
+        // code here
+        Stack<Character> stack = new Stack<>();
+        String postfix = ""; // Always initialize strings as empty values rather than null. In java compiler for strings treats null as string "null"
+        
+        for(int i = 0; i < s.length(); i++) {
+            if(isOperand(s.charAt(i))) {
+                postfix += s.charAt(i);
+            } else if (isOperator(s.charAt(i))) {
+                // it is an operator, dont pop if u encounter a left parenthesis on the stack
+                while(!stack.empty() && !isLeftPranthesis(stack.peek()) && hasHigherPrecedence(s.charAt(i), stack.peek())) {
+                    postfix += stack.peek();
+                    stack.pop();
+                }
+                stack.push(s.charAt(i));
+            } else if (isLeftPranthesis(s.charAt(i))) {
+                stack.push(s.charAt(i));
+            } else if (isRightPranthesis(s.charAt(i))) {
+                 while(!stack.empty() && !isLeftPranthesis(stack.peek())) {
+                    postfix += stack.peek();
+                    stack.pop();
+                }
+                stack.pop(); // pop the left pranthesis as well
+            }
+        }
+        
+        // Since all the characters are processed, stack would be left ony with operators(if any)
+        // Need to pop all the elements from stack
+        while(!stack.empty()) {
+            postfix += stack.peek();
+            stack.pop();
+        }
+        return postfix;
+    }
+    
+    private boolean isRightPranthesis(Character c) {
+        return c == ')' || c == '}' || c == ']';
+    }
+    
+     private boolean isLeftPranthesis(Character c) {
+        return c == '(' || c == '{' || c == '[';
+    }
+    
+    private boolean hasHigherPrecedence(Character c1, Character c2) {
+            int precedenceC1 = getPrecedence(c1);
+            int precedenceC2 = getPrecedence(c2);
+            return precedenceC2 >= precedenceC1;
+        }
+        
+    private int getPrecedence(Character c) {
+            if(c == '+' || c == '-')
+               return 1;
+            else if(c == '*' || c == '/')
+               return 2;
+            else if(c == '^')
+               return 3;
+            else
+               return -1;
+        }
+        
+    private boolean isOperand(Character c) {
+        if (c>='0' && c<='9') return true;
+        if (c>='a' && c<='z') return true;
+        if (c>='A' && c<='Z') return true;
+        return false;
+    }
+        
+    private boolean isOperator(Character c) {
+            if (c == '+' || c == '-' || c == '*' || c == '^' || c == '/')
+               return true;
+            return false;
+        }
+}
